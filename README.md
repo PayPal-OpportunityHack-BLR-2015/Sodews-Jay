@@ -11,7 +11,7 @@
 -> Provided support for sending messages, reports, meal plans and calling the donor periodically. <br />
 
 ## Tech-stack <br />
--> Android, MySQL, Angularjs, nodejs, express, chartjs <br />
+-> Android, MySQL, Angularjs, nodejs, express, chartjs , Sinch<br />
 
 ## Steps to build <br />
 -> APK is provided <br />

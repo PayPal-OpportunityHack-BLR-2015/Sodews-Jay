@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<body>
+
+<div ng-app="sodew" >
+
+<div ng-controller="add">
+
+<form>
+Name: <input type="text" ng-model="name"><br>
+Image:   <input type="file" name="pic" accept="image/*" ng-model="image"><br>
+Age: <input type="text" ng-model="age"><br>
+Education: <input type="text" ng-model="education"></textarea><br>
+Emergency Contact Name: <input type="text" ng-model="emer_contact_name"><br>
+Emergency Contact Number: <input type="text" ng-model="emer_contact_number"><br>
+
+<button ng-click="submit()">submit</button>
+<br>
+
+</form>
+</div>
+
+<div ng-controller="view">
+<button ng-click="get()">get details</button>
+<!-- <ul ng-repeat="kid in kidinfo">
+	<li>{{kid.name}}</li>
+</ul>
+ -->
+ <table class="table table-striped">
+ 	<tr>
+ 		<th>name</th>
+		<th>age</th>
+		<th>education</th>
+		<th>emer_contact_name</th>
+		<th>emer_contact_number</th>
+ 	</tr>
+	<tr ng-repeat="(key, kid) in kidinfo">
+		<td>{{kid.name}}</td>
+		<td>{{kid.age}}</td>
+		<td>{{kid.education.data}}</td>
+		<td>{{kid.emer_contact_name}}</td>
+		<td>{{kid.emer_contact_number}}</td>
+	</tr>
+</table>
+</div>
+</div>
+
+<script>
+var app = angular.module('sodew', []);
+app.controller('add', function($scope, $http) {
+    $scope.name = "John";
+    $scope.age = "19";
+    $scope.education = "12th";
+    $scope.image = "";
+    $scope.emer_contact_name = "";
+    $scope.emer_contact_number = "";
+    $scope.submit = function(){
+    	var body = {
+	    	name: $scope.name ,
+		    age: $scope.age ,
+		    education: $scope.education ,	    
+		    image: $scope.image,
+		    emergency_name: $scope.emer_contact_name ,
+		    emergency_number: $scope.emer_contact_number
+	    };
+    	$http.post("/kidinfo",body).then(function(response){console.log(response)},function(response){console.log(response)});
+    }
+});
+app.controller('view', function($scope, $http) {
+	$scope.kidinfo = [];
+    $scope.get = function(){
+    	console.log("inside controller")
+    	$http.get("/kidinfo",{}).then(function(response){
+    		$scope.kidinfo = response.data.kids;
+    	},function(response){
+    		console.log(response)
+    	});
+    }
+});
+</script>
+
+</body>
+</html>

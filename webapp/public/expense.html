@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<body>
+
+<div ng-app="sodew" >
+
+<div ng-controller="add">
+
+<form>
+description: <input type="text" ng-model="description"><br>
+expense_value:   <input type="text" ng-model="expense_value"><br>
+
+<button ng-click="submit()">submit</button>
+<br>
+
+</form>
+</div>
+
+<div ng-controller="view">
+<button ng-click="get()">get details</button>
+<!-- <ul ng-repeat="kid in kidinfo">
+	<li>{{kid.name}}</li>
+</ul>
+ -->
+ <table class="table table-striped">
+ 	<tr>
+ 		<th>description</th>
+		<th>expense_value</th>
+ 	</tr>
+	<tr ng-repeat="(key, expense) in expenses">
+		<td>{{expense.description}}</td>
+		<td>{{expense.expense_value}}</td>
+	</tr>
+</table>
+
+<canvas id="expenses" width="400" height="400"></canvas>
+
+<script type="text/javascript">
+	var ctx = document.getElementById("expenses").getContext("2d");
+	var data = [];
+	for(var i=0;i<expenses.length;i++){
+		r = Math.floor(Math.random() * 200);
+		g = Math.floor(Math.random() * 200);
+		b = Math.floor(Math.random() * 200);
+		color = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+	    data.push({
+    		value: expense.expense_value,
+    		color: color,
+    		label: expense.description
+    	});
+	}
+	var myPieChart = new Chart(ctx).Pie(data);
+</script>
+
+<div id="legend">
+</div>
+
+</div>
+</div>
+
+<script>
+var app = angular.module('sodew', []);
+app.controller('add', function($scope, $http) {
+    $scope.description = "books";
+    $scope.expense_value = "1000";
+    $scope.submit = function(){
+    	var body = {
+	    	description: $scope.description ,
+		    expense_value: $scope.expense_value ,
+	    };
+    	$http.post("/add_expenses",body).then(function(response){console.log(response)},function(response){console.log(response)});
+    }
+});
+app.controller('view', function($scope, $http) {
+	$scope.expenses = [];
+    $scope.get = function(){
+    	$http.get("/expenses",{}).then(function(response){
+    		$scope.expenses = response.data.expenses;
+    		var ctx = document.getElementById("expenses").getContext("2d");
+			var data = [];
+			expenses=$scope.expenses;
+			for(var i=0;i<expenses.length;i++){
+				r = Math.floor(Math.random() * 200);
+				g = Math.floor(Math.random() * 200);
+				b = Math.floor(Math.random() * 200);
+				color1 = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+			    data.push({
+		    		value: expenses[i].expense_value,
+		    		color: color1,
+		    		label: expenses[i].description
+		    	});
+			}
+			var myPieChart = new Chart(ctx).Pie(data);
+			// document.getElementById("legend").innerHTML = myPieChart.generateLegend()
+    	},function(response){
+    		console.log(response)
+    	});
+    }
+});
+</script>
+
+</body>
+</html>
